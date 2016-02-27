@@ -7,7 +7,7 @@ blue = img(:,:,3); % Blue channel
 
 
 
-K=5; % the K factor for K clustering
+K=4; % the K factor for K clustering
 N=size(img,1)*size(img,2);  
 
 r=zeros(N,K);  %initialise r matrix of binary indicators
@@ -42,3 +42,5 @@ plot(iterations,Js,'bo');    %plot J's over iterations
 scatter3(red(:),green(:),blue(:),[],idx(:),'.') %points colored according to which cluster they belong to 
 hold on;
 scatter3(means(:,1),means(:,2),means(:,3),[],double([means(:,1),means(:,2),means(:,3)])/255,'X'); %cluster means
+
+
