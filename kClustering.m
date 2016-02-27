@@ -42,13 +42,11 @@ squaredNorms=zeros(K,1);
 for n=1:N
     for i=1:K
         squaredNorms(i)=norm(d(n)-means(i))^2;
-        [minimum,index]=min(squaredNorms);
-        if i==index
-            r(n,i)=1;
-            break;
-        end
         
     end
+    [minimum,index]=min(squaredNorms);
+    r(n,index)=1;
+    
 end
 
 
