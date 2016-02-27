@@ -38,11 +38,12 @@ scatter3(red(:),green(:),blue(:),[],idx(:),'.') %scatter all points in 3d, color
 
 
 
-%Step 1
+
 
 means=ceil(rand(K,3)*255); %the k-means points initialisations. We choose them randomly.
 squaredNorms=zeros(K,1);  %initialise a vector of squared norm values to zeros
 
+%Step 1
 
 for n=1:N                %for all datapoints
     for i=1:K           %for all clusters
@@ -73,7 +74,7 @@ end
 J=0;
 for n=1:N
     for i=1:K
-        J=J+r(n,i)*norm(d(n)-means(i))^2;
+        J=J+r(n,i)*norm(d(n)-means(i))^2;  % summation for J 
     end
 end
 
