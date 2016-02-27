@@ -7,7 +7,7 @@ blue = img(:,:,3); % Blue channel
 
 
 
-K=10; % the K factor for K clustering
+K=5; % the K factor for K clustering
 N=size(img,1)*size(img,2);  
 
 r=zeros(N,K);  %initialise r matrix of binary indicators
@@ -22,7 +22,7 @@ J=Inf;    %initialise J to max positive
 iterations=0;   
 tempJ=0;
 while J>0  %while J 
-    [J,means]=iteration(N,K,d,means);  %perform an iteration
+    [J,means,idx]=iteration(N,K,d,means);  %perform an iteration
     J                                  %show J
     iterations=iterations+1;           %count iteration
     if tempJ==J %if two consecutive J's are equal, we assume we reached a minimum
@@ -39,5 +39,6 @@ iterations  %show iterations number
 figure;
 plot(iterations,Js,'bo');    %plot J's over iterations
 
-
-
+scatter3(red(:),green(:),blue(:),[],idx(:),'.') %points colored according to which cluster they belong to 
+hold on;
+scatter3(means(:,1),means(:,2),means(:,3),[],double([means(:,1),means(:,2),means(:,3)])/255,'X'); %cluster means

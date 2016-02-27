@@ -1,4 +1,4 @@
-function [ J,meansOut ] = iteration(N,K,d,means )
+function [ J,meansOut,idx ] = iteration(N,K,d,means )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -17,6 +17,18 @@ for n=1:N                %for all datapoints
     
 end
 % r now holds 1 hot notation of which pixel goes to which cluster 
+
+
+idx=zeros(N,1);
+for i=1:N
+    for j=1:K
+        if r(i,j)==1
+            idx(i)=j;
+        end
+    end
+end
+idx=reshape(idx,300,500);
+
 
 %Step 2
 meansOut=means;
