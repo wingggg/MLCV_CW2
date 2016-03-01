@@ -20,7 +20,7 @@ end
 
 
 idx=zeros(N,1);
-for i=1:N
+parfor i=1:N
     for j=1:K
         if r(i,j)==1
             idx(i)=j;
@@ -32,7 +32,7 @@ idx=reshape(idx,300,500);       %this is
 
 %Step 2
 meansOut=means;    %set value of output means
-for i=1:K           
+parfor i=1:K           
     
     numerator=zeros(1,3);
     denominator=ones(1,3);
