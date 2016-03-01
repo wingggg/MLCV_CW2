@@ -9,7 +9,7 @@ r=zeros(N,K);  %initialise r matrix of binary indicators
 
 for n=1:N                %for all datapoints
     for i=1:K           %for all clusters
-        squaredNorms(i)=norm(d(n)-means(i))^2;    %calc distances from all datapoints to cluster's mean
+        squaredNorms(i)=norm(d(n,:)-means(i,:))^2;    %calc distances from all datapoints to cluster's mean
         
     end
     [minimum,index]=min(squaredNorms); 
@@ -27,25 +27,25 @@ for i=1:N
         end
     end
 end
-idx=reshape(idx,300,500);
+idx=reshape(idx,300,500);       %this is 
 
 
 %Step 2
-meansOut=means;
-for i=1:K
+meansOut=means;    %set value of output means
+for i=1:K           
     
-    numerator=0;
-    denominator=0;
+    numerator=zeros(1,3);
+    denominator=zeros(1,3);
     for n=1:N
-        numerator=numerator+r(n,i)*d(n);
+        numerator=numerator+r(n,i)*d(n,:);
         denominator=denominator+r(n,i);
     end
-    meansOut(i)=numerator/denominator;
+    meansOut(i,:)=numerator./denominator;               %means of each cluster
     
 end
 
 %calc J 
-J=calcJ(N,K,d,r,means);
+J=calcJ(N,K,d,r,meansOut);
 
 
 

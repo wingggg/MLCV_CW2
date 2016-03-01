@@ -7,7 +7,7 @@ blue = img(:,:,3); % Blue channel
 
 
 
-K=4; % the K factor for K clustering
+K=6; % the K factor for K clustering
 N=size(img,1)*size(img,2);  
 
 r=zeros(N,K);  %initialise r matrix of binary indicators
@@ -21,25 +21,34 @@ J=Inf;    %initialise J to max positive
 %do iterations   
 iterations=0;   
 tempJ=0;
-while J>0  %while J 
+Js=[];
+while J>0  %while J >0
     [J,means,idx]=iteration(N,K,d,means);  %perform an iteration
     J                                  %show J
     iterations=iterations+1;           %count iteration
+    iterations
     if tempJ==J %if two consecutive J's are equal, we assume we reached a minimum
         break;
     end
-    tempJ=J;      
-    Js=J;    %collect all J's to plot later
-    figure;   % overlay cluster means with actual points
-    scatter3(means(:,1),means(:,2),means(:,3),[],double([means(:,1),means(:,2),means(:,3)])/255,'X'); %cluster means
-    hold on;
-    scatter3(red(:),green(:),blue(:),[],double([red(:),green(:),blue(:)])/255,'.');   %image points with their real color
+    tempJ=J; 
+%     if iterations>60
+%         break;
+%     end
+    Js=[Js,J];    %collect all J's to plot later
+%     figure;   % overlay cluster means with actual points
+%     scatter3(means(:,1),means(:,2),means(:,3),[],double([means(:,1),means(:,2),means(:,3)])/255,'X'); %cluster means
+%     hold on;
+%     scatter3(red(:),green(:),blue(:),[],double([red(:),green(:),blue(:)])/255,'.');   %image points with their real color
 end
 iterations  %show iterations number
 figure;
-plot(iterations,Js,'bo');    %plot J's over iterations
+plot(1:length(Js),Js,'bo');    %plot J's over iterations
 
+figure;
 scatter3(red(:),green(:),blue(:),[],idx(:),'.') %points colored according to which cluster they belong to 
+xlabel('red') % x-axis label
+ylabel('green') % y-axis label
+zlabel('blue') %z axis
 hold on;
 scatter3(means(:,1),means(:,2),means(:,3),[],double([means(:,1),means(:,2),means(:,3)])/255,'X'); %cluster means
 

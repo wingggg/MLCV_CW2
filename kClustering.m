@@ -20,7 +20,7 @@ r=zeros(N,K);  %initialise r matrix of binary indicators
 d=reshape(img,N,3); %data matrix. Each data point is a pixel.
 d=double(d); %cast from uint8 to double
 
-idx=kmeans(d,K); %perform kmeans clustering using matlab builtin function.
+[idx,Cmeans]=kmeans(d,K); %perform kmeans clustering using matlab builtin function.
 
 
 occurences = zeros(K,1);  %to calc population of each cluster
@@ -31,11 +31,12 @@ end
 
 
 
-idx=reshape(idx,300,500); %reshape cluster labels to use in scatter function
+%idx=reshape(idx,300,500); %reshape cluster labels to use in scatter function
 
 colormap jet; % set nice colormap with distinct colors
 scatter3(red(:),green(:),blue(:),[],idx(:),'.') %scatter all points in 3d, color them according to their cluster. Uses the current colormap
-
+hold on;
+scatter3(Cmeans(:,1),Cmeans(:,2),Cmeans(:,3),[],'black','X'); %cluster means
 
 
 
