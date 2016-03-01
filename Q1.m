@@ -7,8 +7,8 @@ blue = img(:,:,3); % Blue channel
 
 
 
-K=6; % the K factor for K clustering
-N=size(img,1)*size(img,2);  
+K=10; % the K factor for K clustering
+N=size(img,1)*size(img,2);
 
 r=zeros(N,K);  %initialise r matrix of binary indicators
 d=reshape(img,N,3); %data matrix. Each data point is a pixel.
@@ -35,14 +35,16 @@ while J>0  %while J >0
 %         break;
 %     end
     Js=[Js,J];    %collect all J's to plot later
-%     figure;   % overlay cluster means with actual points
-%     scatter3(means(:,1),means(:,2),means(:,3),[],double([means(:,1),means(:,2),means(:,3)])/255,'X'); %cluster means
-%     hold on;
-%     scatter3(red(:),green(:),blue(:),[],double([red(:),green(:),blue(:)])/255,'.');   %image points with their real color
+    figure;   % overlay cluster means with actual points
+    scatter3(means(:,1),means(:,2),means(:,3),[],double([means(:,1),means(:,2),means(:,3)])/255,'X'); %cluster means
+    hold on;
+    scatter3(red(:),green(:),blue(:),[],idx(:),'.')
 end
 iterations  %show iterations number
 figure;
 plot(1:length(Js),Js,'bo');    %plot J's over iterations
+xlabel('Iterations') % x-axis label
+ylabel('J') % y-axis label
 
 figure;
 scatter3(red(:),green(:),blue(:),[],idx(:),'.') %points colored according to which cluster they belong to 
@@ -50,6 +52,6 @@ xlabel('red') % x-axis label
 ylabel('green') % y-axis label
 zlabel('blue') %z axis
 hold on;
-scatter3(means(:,1),means(:,2),means(:,3),[],double([means(:,1),means(:,2),means(:,3)])/255,'X'); %cluster means
+scatter3(means(:,1),means(:,2),means(:,3),[],'black','X'); %cluster means
 
 

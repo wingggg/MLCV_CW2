@@ -35,7 +35,7 @@ meansOut=means;    %set value of output means
 for i=1:K           
     
     numerator=zeros(1,3);
-    denominator=zeros(1,3);
+    denominator=ones(1,3);
     for n=1:N
         numerator=numerator+r(n,i)*d(n,:);
         denominator=denominator+r(n,i);
