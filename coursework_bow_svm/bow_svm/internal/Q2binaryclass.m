@@ -3,9 +3,7 @@
 clearvars;
 [data_train, data_test] = getData('Toy_Spiral');
 
-% X=data_train(:,1:2);
-% Y=data_train(:,3);
-
+%changed for binary-class
 X = data_train(1:100,1:2);
 Y = data_train(1:100,3);
 
@@ -17,7 +15,8 @@ title('{\bf Scatter Diagram of toy measurements}');
 xlabel('X dimension (no unit)');
 ylabel('Y dimension (no unit)');
 
-SVMModels = cell(3,1);
+%changed for binary-class
+SVMModels = cell(2,1);
 classes = unique(Y);
 rng(1); % For reproducibility
 
@@ -42,8 +41,9 @@ end
 [~,maxScore] = max(Scores,[],2);
 
 figure
-h(1:3) = gscatter(xGrid(:,1),xGrid(:,2),maxScore,...
-    [1 0.5 0.5; 0.5 1 0.5; 0.5 0.5 1]);
+%changed for binary-class
+h(1:2) = gscatter(xGrid(:,1),xGrid(:,2),maxScore,...
+    [1 0.5 0.5; 0.5 1 0.5]);
 hold on
 h(4:6) = gscatter(X(:,1),X(:,2),Y);
 title('{\bf Scatter Diagram of toy measurements}');
