@@ -79,17 +79,26 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         disp('Encoding Images...')
         % Vector Quantisation
-        
-        %Code below creates the histogram of a test image. IDX are its
-        %descriptor classifications
-%         hist=zeros(K,1);
-%         for i=1:length(IDX)
-%             for j=1:K
-%                 if IDX(i)==j
-%                     hist(j)=hist(j)+1;
-%                 end
-%             end
-%         end
+        histogramsTrain=zeros(10,15,K);  % K bins for each image
+        for i=1:10
+            for j=1:15     %for each image
+                 
+                IDX = knnsearch(Cmeans,desc_tr{i,j}');   %do knn search
+
+                 %Code below creates the histogram of a test image. IDX are its
+                    %descriptor classifications
+
+ 
+                
+                for ii=1:length(IDX)   
+                    for jj=1:K
+                        if IDX(ii)==jj  %count how many descriptors per codeword (aka per cluster mean)
+                            histogramsTrain(i,j,jj)=histogramsTrain(i,j,jj)+1;  %accumulate
+                        end
+                    end
+                end
+            end
+        end
         
         % write your own codes here
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -142,6 +151,27 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Vector Quantisation
         % write your own codes here
+        
+        histogramsTest=zeros(10,15,K);  % K bins for each image
+        for i=1:10
+            for j=1:15     %for each image
+                 
+                IDX = knnsearch(Cmeans,desc_tr{i,j}');   %do knn search
+
+                 %Code below creates the histogram of a test image. IDX are its
+                    %descriptor classifications
+
+ 
+                
+                for ii=1:length(IDX)   
+                    for jj=1:K
+                        if IDX(ii)==jj  %count how many descriptors per codeword (aka per cluster mean)
+                            histogramsTest(i,j,jj)=histogramsTest(i,j,jj)+1;  %accumulate
+                        end
+                    end
+                end
+            end
+        end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
         
         
@@ -158,5 +188,7 @@ switch MODE
         [x, y] = meshgrid(xrange(1):inc:xrange(2), yrange(1):inc:yrange(2));
         data_query = [x(:) y(:) zeros(length(x)^2,1)];
 end
+
+ 
 
 
