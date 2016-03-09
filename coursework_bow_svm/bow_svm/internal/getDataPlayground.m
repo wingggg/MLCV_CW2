@@ -69,13 +69,7 @@ switch MODE
         %Now Cmeans is the K codewords.
         %idx describes how each of the 100k descriptors got classified into
         %the K codewords
-        
-        
-        
-        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
-       
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         disp('Encoding Images...')
         % Vector Quantisation
@@ -88,7 +82,7 @@ switch MODE
                  %Code below creates the histogram of a test image. IDX are its
                     %descriptor classifications
 
- 
+
                 
                 for ii=1:length(IDX)   
                     for jj=1:K
@@ -99,6 +93,15 @@ switch MODE
                 end
             end
         end
+        
+        histogramsTrain=reshape(histogramsTrain,150,5);
+        labels=zeros(150,1);
+        for i=1:10 %for each label
+            for j=1:15 %for each sample
+                labels()histogramsTrain(i,j,:)
+              
+        
+        
         
         % write your own codes here
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -161,7 +164,7 @@ switch MODE
                  %Code below creates the histogram of a test image. IDX are its
                     %descriptor classifications
 
- 
+
                 
                 for ii=1:length(IDX)   
                     for jj=1:K
@@ -188,7 +191,5 @@ switch MODE
         [x, y] = meshgrid(xrange(1):inc:xrange(2), yrange(1):inc:yrange(2));
         data_query = [x(:) y(:) zeros(length(x)^2,1)];
 end
-
- 
 
 

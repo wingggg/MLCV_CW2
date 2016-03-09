@@ -1,23 +1,15 @@
-%script of Q2.
+%script for Q3
 
-clearvars;
-[data_train, data_test] = getData('Toy_Spiral');
 
-X=data_train(:,1:2);
-Y=data_train(:,3);
+[data_train, data_query]=getData('Caltech');
 
-figure
-gscatter(X(:,1),X(:,2),Y); % scatter plot of the data points. Color them according to their class
+
+
 h = gca;
 lims = [h.XLim h.YLim]; % Extract the x and y axis limits
-title('{\bf Scatter Diagram of toy measurements}');
-xlabel('X dimension (no unit)');
-ylabel('Y dimension (no unit)');
-
 SVMModels = cell(3,1);
-classes = unique(Y);
+classes = unique(data_train);
 rng(1); % For reproducibility
-
 for j = 1:numel(classes);
     indx = (Y==classes(j)); % Create binary classes for each classifier
     SVMModels{j} = fitcsvm(X,indx,'ClassNames',[false true],'Standardize',true,...

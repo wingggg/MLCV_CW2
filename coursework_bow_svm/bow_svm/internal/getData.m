@@ -7,7 +7,7 @@ function [ data_train, data_query ] = getData( MODE )
 %   3. Toy_Circle
 %   4. Caltech 101
 
-showImg = 1; % Show training & testing images and their image feature vector (histogram representation)
+showImg = 0; % Show training & testing images and their image feature vector (histogram representation)
 
 PHOW_Sizes = [4 8 10]; % Multi-resolution, these values determine the scale of each layer.
 PHOW_Step = 8; % The lower the denser. Select from {2,4,8,16}
@@ -80,9 +80,9 @@ switch MODE
     case 'Caltech' % Caltech dataset
         close all;
         imgSel = [15 15]; % randomly select 15 images each class without replacement. (For both training & testing)
-        folderName = './Caltech_101/101_ObjectCategories';
+        folderName = '../Caltech_101/101_ObjectCategories';
         classList = dir(folderName);
-        classList = {classList(3:end).name} % 10 classes
+        classList = {classList(3:end).name}; % 10 classes
         
         disp('Loading training images...')
         % Load Images -> Description (Dense SIFT)
@@ -102,7 +102,7 @@ switch MODE
                 I = imread(fullfile(subFolderName,imgList(imgIdx_tr(i)).name));
                 
                 % Visualise
-                if i < 6 & showImg
+                if i < 6 && showImg
                     subaxis(length(classList),5,cnt,'SpacingVert',0,'MR',0);
                     imshow(I);
                     cnt = cnt+1;
@@ -126,8 +126,12 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % K-means clustering
         % write your own codes here
+        K=5;
         
-        
+        [idx,Cmeans]=kmeans(desc_sel',K);
+        %Now Cmeans is the K codewords.
+        %idx describes how each of the 100k descriptors got classified into
+        %the K codewords
         
         
         
@@ -138,6 +142,27 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         disp('Encoding Images...')
         % Vector Quantisation
+        histogramsTrain=zeros(10,15,K);  % K bins for each image
+        for i=1:10
+            for j=1:15     %for each image
+                 
+                IDX = knnsearch(Cmeans,desc_tr{i,j}');   %do knn search
+
+                 %Code below creates the histogram of a test image. IDX are its
+                    %descriptor classifications
+
+
+                
+                for ii=1:length(IDX)   
+                    for jj=1:K
+                        if IDX(ii)==jj  %count how many descriptors per codeword (aka per cluster mean)
+                            histogramsTrain(i,j,jj)=histogramsTrain(i,j,jj)+1;  %accumulate
+                        end
+                    end
+                end
+            end
+        end
+        
         % write your own codes here
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
@@ -145,11 +170,15 @@ switch MODE
         
         % data_train: [num_data x (dim+1)] Training vectors with class labels
         % data_train(:,end): class labels
-        data_train = [];
+        
+        labels=1:10;
+        labels=repmat(labels',15,1);
+        histogramsTrain=reshape(histogramsTrain,150,5);
+        data_train = [histogramsTrain, labels];
         
        
         % Clear unused varibles to save memory
-        clearvars desc_tr desc_sel
+        %clearvars  desc_sel
 end
 
 switch MODE
@@ -189,13 +218,35 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Vector Quantisation
         % write your own codes here
+        
+        histogramsTest=zeros(10,15,K);  % K bins for each image
+        for i=1:10
+            for j=1:15     %for each image
+                 
+                IDX = knnsearch(Cmeans,desc_tr{i,j}');   %do knn search
+
+                 %Code below creates the histogram of a test image. IDX are its
+                    %descriptor classifications
+
+
+                
+                for ii=1:length(IDX)   
+                    for jj=1:K
+                        if IDX(ii)==jj  %count how many descriptors per codeword (aka per cluster mean)
+                            histogramsTest(i,j,jj)=histogramsTest(i,j,jj)+1;  %accumulate
+                        end
+                    end
+                end
+            end
+        end
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
         
         
         % data_query: [num_data x (dim+1)] Testing vectors with class labels
         % data_query(:,end): class labels
         data_query = [];
-        
+        data_query=reshape(histogramsTest,150,5);
         
         
     otherwise % Dense point for 2D toy data
@@ -205,5 +256,8 @@ switch MODE
         [x, y] = meshgrid(xrange(1):inc:xrange(2), yrange(1):inc:yrange(2));
         data_query = [x(:) y(:) zeros(length(x)^2,1)];
 end
+
+
+
 end
 

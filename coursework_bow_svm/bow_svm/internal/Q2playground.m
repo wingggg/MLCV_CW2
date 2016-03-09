@@ -1,7 +1,7 @@
 %script of Q2.
 
 clearvars;
-[data_train, data_test] = getData('Caltech');
+[data_train, data_test] = getData('Toy_Spiral');
 
 X=data_train(:,1:2);
 Y=data_train(:,3);
