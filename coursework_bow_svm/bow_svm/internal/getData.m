@@ -126,7 +126,7 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % K-means clustering
         % write your own codes here
-        K=5;
+        K=100;
         
         [idx,Cmeans]=kmeans(desc_sel',K);
         %Now Cmeans is the K codewords.
@@ -173,7 +173,7 @@ switch MODE
         
         labels=1:10;
         labels=repmat(labels',15,1);
-        histogramsTrain=reshape(histogramsTrain,150,5);
+        histogramsTrain=reshape(histogramsTrain,150,K);
         data_train = [histogramsTrain, labels];
         
        
@@ -223,7 +223,7 @@ switch MODE
         for i=1:10
             for j=1:15     %for each image
                  
-                IDX = knnsearch(Cmeans,desc_tr{i,j}');   %do knn search
+                IDX = knnsearch(Cmeans,desc_te{i,j}');   %do knn search
 
                  %Code below creates the histogram of a test image. IDX are its
                     %descriptor classifications
@@ -246,8 +246,12 @@ switch MODE
         % data_query: [num_data x (dim+1)] Testing vectors with class labels
         % data_query(:,end): class labels
         data_query = [];
-        data_query=reshape(histogramsTest,150,5);
         
+        
+        labels=1:10;
+        labels=repmat(labels',15,1);
+        histogramsTest=reshape(histogramsTest,150,K);
+        data_query = [histogramsTest, labels];
         
     otherwise % Dense point for 2D toy data
         xrange = [-1.5 1.5];
