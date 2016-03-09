@@ -1,3 +1,15 @@
-
+%Q3 script using libSVM
 [data_train, data_query]=getData('Caltech');
-model = svmtrain(data_train(:,end), data_train(:,1:end-1));
+labels=data_train(:,end);
+
+%we can only use svmtrain with to classes at a time. 
+% We will first try one vs many.
+
+
+
+
+
+   
+
+
+% B) 
