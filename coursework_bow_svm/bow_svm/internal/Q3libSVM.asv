@@ -35,25 +35,21 @@ for i=1:10 %for each class
     
     %svm goes here
     
-    SVMStruct = svmtrain(data_trainTemp(:,end), data_trainTemp(:,1:end-1),'-c 1 -g 0.2 -b 1'); %run svm for current pair of classes
+    SVMStruct = svmtrain(data_trainTemp(:,end), data_trainTemp(:,1:end-1)); %run svm for current pair of classes
     svmStructs=[svmStructs SVMStruct]; %store in struct of svm results 
     
-    [predicted_label, accuracy, prob_estimates]=svmpredict(data_queryTemp(:,end), data_queryTemp(:,1:end-1), SVMStruct, '-b 1');
- 
+    [predicted_label, accuracy,prob_estimates]=svmpredict(data_queryTemp(:,end), data_queryTemp(:,1:end-1), SVMStruct);
+    
+    for k=1:10
+        prob(:,k)=p(:,SVMStructs[])
+    
+    
+    
+    
 %     [predicted_label, accuracy,prob_estimates]=svmpredict(data_queryTemp(:,end), [(1:150)', data_queryTemp(:,1:end-1)*data_trainTemp(:,1:end-1)'], SVMStruct);
 %     SVMPredictStruct=[predicted_label, accuracy, prob_estimates];
 %     svmPredictions=[svmPredictions SVMPredictStruct];
 end
-
-
-%%Code to assign class to 
-for i=1:10
-    prob(:,i)=prob_estimates(:,svmStructs(1,i).Label(1)==1);
-end
-
-[~,pred] = max(prob,[],2);
-%acc = sum(pred == testLabel) ./ numel(testLabel)    %# accuracy
-%C = confusionmat(testLabel, pred)                   %# confusion matrix
    
 %testing the svms
 

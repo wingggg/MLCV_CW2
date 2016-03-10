@@ -21,7 +21,7 @@ rng(1); % For reproducibility
 for j = 1:numel(classes);
     indx = (Y==classes(j)); % Create binary classes for each classifier
     SVMModels{j} = fitcsvm(X,indx,'ClassNames',[false true],'Standardize',true,...
-        'KernelFunction','rbf','BoxConstraint',1);
+        'KernelFunction','rbf','BoxConstraint',5);
 end
 
 d = 0.02;

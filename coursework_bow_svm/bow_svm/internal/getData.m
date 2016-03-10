@@ -126,7 +126,7 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % K-means clustering
         % write your own codes here
-        K=3;
+        K=100;
         
         [idx,Cmeans]=kmeans(desc_sel',K);
         %Now Cmeans is the K codewords.
