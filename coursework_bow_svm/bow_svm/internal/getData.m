@@ -126,7 +126,7 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % K-means clustering
         % write your own codes here
-        K=500; % quantisation number
+        K=; % quantisation number
         
         [Cmeans, idx]=kmeans(desc_sel,K);
         %Now Cmeans is the K codewords.
