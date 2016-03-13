@@ -126,9 +126,9 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % K-means clustering
         % write your own codes here
-        K=100;
+        K=500; % quantisation number
         
-        [idx,Cmeans]=kmeans(desc_sel',K);
+        [Cmeans, idx]=kmeans(desc_sel,K);
         %Now Cmeans is the K codewords.
         %idx describes how each of the 100k descriptors got classified into
         %the K codewords
@@ -146,7 +146,7 @@ switch MODE
         for i=1:10
             for j=1:15     %for each image
                  
-                IDX = knnsearch(Cmeans,desc_tr{i,j}');   %do knn search
+                IDX = knnsearch(Cmeans',desc_tr{i,j}');   %do knn search
 
                  %Code below creates the histogram of a test image. IDX are its
                     %descriptor classifications
@@ -223,7 +223,7 @@ switch MODE
         for i=1:10
             for j=1:15     %for each image
                  
-                IDX = knnsearch(Cmeans,desc_te{i,j}');   %do knn search
+                IDX = knnsearch(Cmeans',desc_te{i,j}');   %do knn search
 
                  %Code below creates the histogram of a test image. IDX are its
                     %descriptor classifications
@@ -263,5 +263,5 @@ end
 
 
 
-end
+
 

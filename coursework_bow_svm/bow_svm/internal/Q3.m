@@ -1,45 +1,81 @@
-%script for Q3
-
-
+%Q3 script using libSVM
+clear all;
+%addpath('../external/libsvm-3.18');
 [data_train, data_query]=getData('Caltech');
+labels=data_train(:,end);
+
+%we can only use svmtrain with two classes at a time. 
+% We will first try one vs many.
+
+%A) One vs Many
+%training svms 
+svmStructs=[];
+svmPredictions=[];
+prob=[];
+data_trainTemp=data_train;
+data_queryTemp=data_query;
 
 
+%===========================
 
-h = gca;
-lims = [h.XLim h.YLim]; % Extract the x and y axis limits
-SVMModels = cell(3,1);
-classes = unique(data_train);
-rng(1); % For reproducibility
-for j = 1:numel(classes);
-    indx = (Y==classes(j)); % Create binary classes for each classifier
-    SVMModels{j} = fitcsvm(X,indx,'ClassNames',[false true],'Standardize',true,...
-        'KernelFunction','rbf','BoxConstraint',1);
+
+for i=1:length(unique(labels)) %for each class
+    
+    for j=1:size(data_train,1)  %for each data sample
+        
+        if data_train(j,end)==i     %make a temp matrix with class i being 1 and all other classes being 0 for train data
+            data_trainTemp(j,end)=1;   
+        else
+            data_trainTemp(j,end)=0;
+        end
+    end
+    for j=1:size(data_query,1)   
+        if data_query(j,end)==i     %make a temp matrix with class i being 1 and all other classes being 0 for query data
+            data_queryTemp(j,end)=1;   
+        else
+            data_queryTemp(j,end)=0;
+        end
+    end
+    
+    %svm goes here
+    
+    %bestGamma=0.2;
+    %bestC=10000;
+    
+    [bestC, bestGamma]=gridSearch(data_trainTemp,-5,15,-15,3);
+    cmd=[' -c ',num2str(bestC), ' -g ', num2str(bestGamma), ' -b 1 -t 2 ']; %build the arguments tsring for svm train
+    SVMStruct = svmtrain(data_trainTemp(:,end), data_trainTemp(:,1:end-1),cmd); %run svm for current pair of classes
+    svmStructs=[svmStructs SVMStruct]; %store in struct of svm results 
+    
+    %run prediction for query data
+    [predicted_label, accuracy, prob_estimates]=svmpredict(data_queryTemp(:,end), data_queryTemp(:,1:end-1), SVMStruct, '-b 1');
+    
+
+%     [predicted_label, accuracy,prob_estimates]=svmpredict(data_queryTemp(:,end), [(1:150)', data_queryTemp(:,1:end-1)*data_trainTemp(:,1:end-1)'], SVMStruct);     SVMPredictStruct=[predicted_label, accuracy, prob_estimates];
+%     svmPredictions=[svmPredictions SVMPredictStruct];
+
+    prob=[prob prob_estimates(:,SVMStruct.Label==1)]; %append the column of probabilities that describe how much each data point is being classified as the tested class (i in loop).
+
+    
+   
+%     probEstimates = [probEstimates prob_estimates];
 end
 
-d = 0.02;
-[x1Grid,x2Grid] = meshgrid(min(X(:,1)):d:max(X(:,1)),...
-    min(X(:,2)):d:max(X(:,2)));
-xGrid = [x1Grid(:),x2Grid(:)];
-N = size(xGrid,1);
-Scores = zeros(N,numel(classes));
 
-for j = 1:numel(classes);
-    [~,score] = predict(SVMModels{j},xGrid);
-    Scores(:,j) = score(:,2); % Second column contains positive-class scores
+%combine the one vs Rest classifications to a single multiclass list of
+%labels
+indices=zeros(length(prob),1);  %init the indices matrix
+for i=1:length(prob)
+    [~,indices(i)]=max(prob(i,:)); %find indices of maximum probs   %predicted class = indices(i)
 end
+multiClassLabels=indices;
 
-[~,maxScore] = max(Scores,[],2);
+accuracy=zeros(length(predicted_label),1);
+for i=1:length(predicted_label)
+    accuracy(i)=(multiClassLabels(i)==data_query(i,3));
+end
+percentageAccuracy=sum(accuracy)/length(predicted_label);
 
-figure
-h(1:3) = gscatter(xGrid(:,1),xGrid(:,2),maxScore,...
-    [1 0.5 0.5; 0.5 1 0.5; 0.5 0.5 1]);
-hold on
-h(4:6) = gscatter(X(:,1),X(:,2),Y);
-title('{\bf Scatter Diagram of toy measurements}');
-xlabel('X dimension (no unit)');
-ylabel('Y dimension (no unit)');
-legend(h,{'class 1 region','class 2 region','class 3 region',...
-    'observed class 1','observed class 2','observed class 3'},...
-    'Location','Northwest');
-axis tight
-hold off
+
+
+
