@@ -14,26 +14,7 @@ svmPredictions=[];
 prob=[];
 
 
-%Search for best parameter C 
-%taken from http://www.csie.ntu.edu.tw/~cjlin/libsvm/faq.html#f803
 
-
-bestcv = 0;
-for log2c = -5:15, %values suggested by guide from Hsu-Chang-Lin
-  for log2g = -15:3,
-    cmd = ['-v 5 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g)];
-    cv = svmtrain(data_train(:,end), data_train(:,1:end-1), cmd);
-    if (cv >= bestcv),
-      bestcv = cv; bestc = 2^log2c; bestg = 2^log2g; 
-
-    end
-    fprintf('%g %g %g (best c=%g, g=%g, rate=%g)\n', log2c, log2g, cv, bestc, bestg, bestcv); 
-    
-  end
-end
-
-
-%===========================
 
 classData={};
 for i=1:length(unique(labels))
@@ -50,12 +31,13 @@ for i=1:length(unique(labels))
     labels2(1:length(classData{i}))=1+mod(i+1,3);
     labels=[labels1 labels2]';
     tempTrainData=[classData{i} ; classData{1+mod(i+1,3)}];
+    [bestc,bestg]=gridSearch(tempTrainData,-5,15,-15,3);
     cmd=[' -c ',num2str(bestc), ' -g ', num2str(bestg), ' -b 1 -t 2 '];
     altCmd=[' -c 500 -g 1 -b 1 -t 2 '];
     SVMStruct = svmtrain(labels,tempTrainData,altCmd);
     svmStructs=[svmStructs SVMStruct];
     
-    [predicted_label, accuracy, prob_estimates]=svmpredict(data_query(:,end), data_query(:,1:end-1), SVMStruct, '-b 1');
+    [predicted_label, accuracy, prob_estimates]=svmpredict(data_query(:,end), data_query(:,1:end-1), SVMStruct, '-b 1 ');
     
     prob=[prob prob_estimates(:,SVMStruct.Label==i)]; %append the column of probabilities that describe how much each data point is being classified as the tested class (i in loop).
 

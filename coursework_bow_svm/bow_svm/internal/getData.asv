@@ -1,4 +1,4 @@
-MODE='Caltech';
+function [ data_train, data_query ] = getData( MODE )
 % Generate training and testing data
 
 % Data Options:
@@ -126,7 +126,7 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % K-means clustering
         % write your own codes here
-        K=100; % quantisation number
+        K=10; % quantisation number
         
         [Cmeans, idx]=kmeans(desc_sel,K);
         %Now Cmeans is the K codewords.
