@@ -1,7 +1,8 @@
 %Q3 script using libSVM
 clearvars
 %addpath('../external/libsvm-3.18');
-[data_train, data_query]=getData('Caltech');
+tic
+[data_train, data_query]=getData('Toy_Spiral');
 labels=data_train(:,end);
 
 %we can only use svmtrain with two classes at a time. 
@@ -20,7 +21,9 @@ data_queryTemp=data_query;
 
 
 %===========================
-
+bestGamma=0.2;
+bestC=10000;
+kernelType=0;
 figure;
 for i=1:length(unique(labels)) %for each class
     
@@ -42,10 +45,9 @@ for i=1:length(unique(labels)) %for each class
     
     %svm goes here
     
-    %bestGamma=0.2;
-    %bestC=10000;
+
     
-    [bestC, bestGamma]=gridSearch(data_trainTemp,-5,15,-15,3);
+    %[bestC, bestGamma]=gridSearch(data_trainTemp,-5,15,-15,3);
     cmd=[' -c ',num2str(bestC), ' -g ', num2str(bestGamma), ' -b 1 -t 2 ']; %build the arguments tsring for svm train
     SVMStruct = svmtrain(data_trainTemp(:,end), data_trainTemp(:,1:end-1),cmd); %run svm for current pair of classes
     svmStructs=[svmStructs SVMStruct]; %store in struct of svm results 
@@ -65,6 +67,7 @@ for i=1:length(unique(labels)) %for each class
     xlabel('X dimension (no unit)');
     ylabel('Y dimension (no unit)');
     hold off;
+    fig1=gcf;
 %     [predicted_label, accuracy,prob_estimates]=svmpredict(data_queryTemp(:,end), [(1:150)', data_queryTemp(:,1:end-1)*data_trainTemp(:,1:end-1)'], SVMStruct);     SVMPredictStruct=[predicted_label, accuracy, prob_estimates];
 %     svmPredictions=[svmPredictions SVMPredictStruct];
 
@@ -98,20 +101,40 @@ xlabel('X dimension (no unit)');
 ylabel('Y dimension (no unit)');
 hold on;
 gscatter(data_query(:,1),data_query(:,2),multiClassLabels); %plot classified query data on top, colored according to class
-%==========
-
-%following code would be accurate if query data had labels attached, but
-%they dont
-% accuracy=zeros(length(predicted_label),1);
-% for i=1:length(predicted_label)
-%     accuracy(i)=(multiClassLabels(i)==data_query(i,3));
-% end
-% percentageAccuracy=sum(accuracy)/length(predicted_label);
+hold off;
+fig2=gcf;
 
 
+%WRITE RESULTS
 
-% B) One vs One
-% ==============================================================
+toc
+fileID = fopen('Q2Results.txt','a');
+fprintf(fileID,'Q2 1vRest\n');
+fprintf(fileID,'C used: %f \n',bestC);
+fprintf(fileID,'Gamma used: %f \n',bestGamma);
+switch kernelType
+    case 0
+        fprintf(fileID,'Kernel used: linear \n');
+    case 1
+        fprintf(fileID,'Kernel used: polynomial \n');
+    case 2
+        fprintf(fileID,'Kernel used: rbf \n');
+    case 3
+        fprintf(fileID,'Kernel used: sigmoid \n');
+    case 4
+        fprintf(fileID,'Kernel used: precomputed kernel \n');
+end
+fprintf(fileID,'Time duration: %f seconds\n',toc);
+fprintf(fileID,'===============================================\n');
+fclose(fileID);
+
+%SAVE FIGURES AS PNG
+nameStr=['1vRest_' ,num2str(bestC), '_',num2str(bestGamma),'_',num2str(kernelType)];
+nameStr1=[nameStr '_interim.png'];
+saveas(fig1,nameStr1);
+
+nameStr2=[nameStr '_final.png'];
+saveas(fig2,nameStr2);
 
 
 

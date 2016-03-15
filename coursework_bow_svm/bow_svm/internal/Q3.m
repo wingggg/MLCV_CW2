@@ -36,10 +36,10 @@ for i=1:length(unique(labels)) %for each class
     end
    
     
-    %bestGamma=0.2;
-    %bestC=10000;
+    bestGamma=0.2;
+    bestC=10000;
     
-    [bestC, bestGamma]=gridSearch(data_trainTemp,-5,15,-15,3); %run a gridSearch with crossValidation to find the best C and gamma params
+   % [bestC, bestGamma]=gridSearch(data_trainTemp,-5,15,-15,3); %run a gridSearch with crossValidation to find the best C and gamma params
     cmd=[' -c ',num2str(bestC), ' -g ', num2str(bestGamma), ' -b 1 -t 2 -q ']; %build the arguments string for svmtrain
     SVMStruct = svmtrain(data_trainTemp(:,end), data_trainTemp(:,1:end-1),cmd); %run svm for current pair of classes
     svmStructs=[svmStructs SVMStruct]; %store results in struct of svm results 
