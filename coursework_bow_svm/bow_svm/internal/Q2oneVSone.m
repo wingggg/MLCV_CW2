@@ -15,13 +15,6 @@ svmPredictions=[];
 prob=[];
 
 
-%Search for best parameter C 
-%taken from http://www.csie.ntu.edu.tw/~cjlin/libsvm/faq.html#f803
-
-
-
-
-%===========================
 
 classData={};
 for i=1:length(unique(labels))
@@ -54,6 +47,7 @@ for i=1:length(unique(labels))
     svmStructs=[svmStructs SVMStruct];
     
     [predicted_label, accuracy, prob_estimates]=svmpredict(data_query(:,end), data_query(:,1:end-1), SVMStruct, '-b 1 q');
+
     
     prob=[prob prob_estimates(:,SVMStruct.Label==i)]; %append the column of probabilities that describe how much each data point is being classified as the tested class (i in loop).
 

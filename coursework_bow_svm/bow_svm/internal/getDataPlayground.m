@@ -13,6 +13,69 @@ PHOW_Sizes = [4 8 10]; % Multi-resolution, these values determine the scale of e
 PHOW_Step = 8; % The lower the denser. Select from {2,4,8,16}
 
 switch MODE
+    case 'Toy_Gaussian' % Gaussian distributed 2D points
+        %rand('state', 0);
+        %randn('state', 0);
+        N= 150;
+        D= 2;
+        
+        cov1 = randi(4);
+        cov2 = randi(4);
+        cov3 = randi(4);
+        
+        X1 = mgd(N, D, [randi(4)-1 randi(4)-1], [cov1 0;0 cov1]);
+        X2 = mgd(N, D, [randi(4)-1 randi(4)-1], [cov2 0;0 cov2]);
+        X3 = mgd(N, D, [randi(4)-1 randi(4)-1], [cov3 0;0 cov3]);
+        
+        X= real([X1; X2; X3]);
+        X= bsxfun(@rdivide, bsxfun(@minus, X, mean(X)), var(X));
+        Y= [ones(N, 1); ones(N, 1)*2; ones(N, 1)*3];
+        
+        data_train = [X Y];
+        
+    case 'Toy_Spiral' % Spiral (from Karpathy's matlab toolbox)
+        
+        N= 50;
+        t = linspace(0.5, 2*pi, N);
+        x = t.*cos(t);
+        y = t.*sin(t);
+        
+        t = linspace(0.5, 2*pi, N);
+        x2 = t.*cos(t+2);
+        y2 = t.*sin(t+2);
+        
+        t = linspace(0.5, 2*pi, N);
+        x3 = t.*cos(t+4);
+        y3 = t.*sin(t+4);
+        
+        X= [[x' y']; [x2' y2']; [x3' y3']];
+        X= bsxfun(@rdivide, bsxfun(@minus, X, mean(X)), var(X));
+        Y= [ones(N, 1); ones(N, 1)*2; ones(N, 1)*3];
+        
+        data_train = [X Y];
+        
+    case 'Toy_Circle' % Circle
+        
+        N= 50;
+        t = linspace(0, 2*pi, N);
+        r = 0.4
+        x = r*cos(t);
+        y = r*sin(t);
+        
+        r = 0.8
+        t = linspace(0, 2*pi, N);
+        x2 = r*cos(t);
+        y2 = r*sin(t);
+        
+        r = 1.2;
+        t = linspace(0, 2*pi, N);
+        x3 = r*cos(t);
+        y3 = r*sin(t);
+        
+        X= [[x' y']; [x2' y2']; [x3' y3']];
+        Y= [ones(N, 1); ones(N, 1)*2; ones(N, 1)*3];
+        
+        data_train = [X Y];
         
     case 'Caltech' % Caltech dataset
         close all;
@@ -63,13 +126,19 @@ switch MODE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % K-means clustering
         % write your own codes here
-        K=5;
+        K=100; % quantisation number
         
-        [idx,Cmeans]=kmeans(desc_sel',K);
+        [Cmeans, idx]=kmeans(desc_sel,K);
         %Now Cmeans is the K codewords.
         %idx describes how each of the 100k descriptors got classified into
         %the K codewords
+        
+        
+        
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+       
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         disp('Encoding Images...')
         % Vector Quantisation
@@ -77,7 +146,7 @@ switch MODE
         for i=1:10
             for j=1:15     %for each image
                  
-                IDX = knnsearch(Cmeans,desc_tr{i,j}');   %do knn search
+                IDX = knnsearch(Cmeans',desc_tr{i,j}');   %do knn search
 
                  %Code below creates the histogram of a test image. IDX are its
                     %descriptor classifications
@@ -94,15 +163,6 @@ switch MODE
             end
         end
         
-        histogramsTrain=reshape(histogramsTrain,150,5);
-        labels=zeros(150,1);
-        for i=1:10 %for each label
-            for j=1:15 %for each sample
-                labels()histogramsTrain(i,j,:)
-              
-        
-        
-        
         % write your own codes here
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
@@ -110,7 +170,11 @@ switch MODE
         
         % data_train: [num_data x (dim+1)] Training vectors with class labels
         % data_train(:,end): class labels
-        data_train = [];
+        
+        labels=1:10;
+        labels=repmat(labels',15,1);
+        histogramsTrain=reshape(histogramsTrain,150,K);
+        data_train = [histogramsTrain, labels];
         
        
         % Clear unused varibles to save memory
@@ -159,7 +223,7 @@ switch MODE
         for i=1:10
             for j=1:15     %for each image
                  
-                IDX = knnsearch(Cmeans,desc_tr{i,j}');   %do knn search
+                IDX = knnsearch(Cmeans',desc_te{i,j}');   %do knn search
 
                  %Code below creates the histogram of a test image. IDX are its
                     %descriptor classifications
@@ -175,6 +239,7 @@ switch MODE
                 end
             end
         end
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
         
         
@@ -183,6 +248,10 @@ switch MODE
         data_query = [];
         
         
+        labels=1:10;
+        labels=repmat(labels',15,1);
+        histogramsTest=reshape(histogramsTest,150,K);
+        data_query = [histogramsTest, labels];
         
     otherwise % Dense point for 2D toy data
         xrange = [-1.5 1.5];
@@ -191,5 +260,8 @@ switch MODE
         [x, y] = meshgrid(xrange(1):inc:xrange(2), yrange(1):inc:yrange(2));
         data_query = [x(:) y(:) zeros(length(x)^2,1)];
 end
+
+
+
 
 
