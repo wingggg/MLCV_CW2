@@ -21,9 +21,9 @@ data_queryTemp=data_query;
 
 
 %===========================
-bestGamma=0.2;
-bestC=10000;
-kernelType=0;
+bestGamma=8;
+bestC=0.0001;
+kernelType=2;
 figure;
 for i=1:length(unique(labels)) %for each class
     
@@ -47,7 +47,7 @@ for i=1:length(unique(labels)) %for each class
     
 
     
-    %[bestC, bestGamma]=gridSearch(data_trainTemp,-5,15,-15,3);
+    [bestC, bestGamma]=gridSearch(data_trainTemp,-5,15,-15,3);
     cmd=[' -c ',num2str(bestC), ' -g ', num2str(bestGamma), ' -b 1 -t 2 ']; %build the arguments tsring for svm train
     SVMStruct = svmtrain(data_trainTemp(:,end), data_trainTemp(:,1:end-1),cmd); %run svm for current pair of classes
     svmStructs=[svmStructs SVMStruct]; %store in struct of svm results 
@@ -62,8 +62,8 @@ for i=1:length(unique(labels)) %for each class
     plot_toydata(data_train);
     hold on; % to superimpose the 1vs Rest results
     gscatter(data_query(:,1),data_query(:,2),predicted_label);
-    str = sprintf('query data classification between class %g and class %g ',i,1+mod(i+1,3));
-    title(str);
+    %str = sprintf('query data classification between class %g and class %g ',i,1+mod(i+1,3));
+    %title(str);
     xlabel('X dimension (no unit)');
     ylabel('Y dimension (no unit)');
     hold off;

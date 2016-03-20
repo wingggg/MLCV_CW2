@@ -1,5 +1,5 @@
 %Q3 script using libSVM
-clear all;
+clearvars;
 %addpath('../external/libsvm-3.18');
 [data_train, data_query]=getData('Caltech');
 labels=data_train(:,end); %extract labels from training data
@@ -39,7 +39,7 @@ for i=1:length(unique(labels)) %for each class
     bestGamma=0.2;
     bestC=10000;
     
-   % [bestC, bestGamma]=gridSearch(data_trainTemp,-5,15,-15,3); %run a gridSearch with crossValidation to find the best C and gamma params
+    % [bestC, bestGamma]=gridSearch(data_trainTemp,-5,15,-15,3); %run a gridSearch with crossValidation to find the best C and gamma params
     cmd=[' -c ',num2str(bestC), ' -g ', num2str(bestGamma), ' -b 1 -t 2 -q ']; %build the arguments string for svmtrain
     SVMStruct = svmtrain(data_trainTemp(:,end), data_trainTemp(:,1:end-1),cmd); %run svm for current pair of classes
     svmStructs=[svmStructs SVMStruct]; %store results in struct of svm results 
@@ -74,7 +74,7 @@ for i=1:length(predicted_label)
     accuracy(i)=(multiClassLabels(i)==data_query(i,end)); %sum all the instances on which our prediction matches the test data actual label
 end
 percentageAccuracy=sum(accuracy)/length(predicted_label); %find the percentage of correct predictions
-percentageAccuracy=percentageAccuracy*100;
+
 %Confusion matrix code below  (?) 
 
 

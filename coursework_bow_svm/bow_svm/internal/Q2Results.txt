@@ -1,0 +1,66 @@
+    Q2 1v1
+C used: 32768.000000 
+Gamma used: 8.000000 
+Kernel used: rbf 
+Time duration: 1.131396 seconds
+===============================================
+Q2 1vRest
+C used: 10000.000000 
+Gamma used: 0.200000 
+Kernel used: linear 
+Time duration: 1.128550 seconds
+===============================================
+Q2 1vRest
+C used: 10000.000000 
+Gamma used: 0.200000 
+Kernel used: linear 
+Time duration: 1.056274 seconds
+===============================================
+Q2 1vRest
+C used: 10000.000000 
+Gamma used: 0.200000 
+Kernel used: rbf 
+Time duration: 2.625240 seconds
+===============================================
+Q2 1vRest
+C used: 0.100000 
+Gamma used: 0.200000 
+Kernel used: rbf 
+Time duration: 1.095309 seconds
+===============================================
+Q2 1vRest
+C used: 10.000000 
+Gamma used: 0.200000 
+Kernel used: rbf 
+Time duration: 0.928270 seconds
+===============================================
+Q2 1vRest
+C used: 1000.000000 
+Gamma used: 0.200000 
+Kernel used: rbf 
+Time duration: 0.959199 seconds
+===============================================
+Q2 1vRest
+C used: 16384.000000 
+Gamma used: 8.000000 
+Kernel used: rbf 
+Time duration: 31.439637 seconds
+===============================================
+Q2 1vRest
+C used: 16384.000000 
+Gamma used: 8.000000 
+Kernel used: rbf 
+Time duration: 31.461453 seconds
+===============================================
+Q2 1vRest
+C used: 16384.000000 
+Gamma used: 8.000000 
+Kernel used: rbf 
+Time duration: 31.612051 seconds
+===============================================
+Q2 1vRest
+C used: 16384.000000 
+Gamma used: 8.000000 
+Kernel used: rbf 
+Time duration: 31.759103 seconds
+===============================================
